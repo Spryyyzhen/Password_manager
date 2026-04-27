@@ -86,9 +86,3 @@ def decrypt_wallet(name=str, password=str) -> int:
     
     except Exception:
         return -1
-
-create_wallet("john")
-
-encrypt_wallet("john", "Password")
-
-decrypt_wallet("joezfez", "Password1")
