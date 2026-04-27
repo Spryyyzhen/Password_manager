@@ -38,7 +38,6 @@ def encrypt_wallet(name=str, password=str) -> None:
 
     salt = os.urandom(16)
     key = generate_key(password, salt)
-    print(type(key))
     fernet = Fernet(key)
 
     with open(file_src.parent / "wallets" / f"{name}_wallet.json", "rb") as f:
@@ -58,21 +57,22 @@ def decrypt_wallet(name=str, password=str) -> int:
     """
     Function that decrypts the user's .enc wallet and transforms it into a .json file.\n
     Takes both the user's name and his password.\n
-    Returns 0 if the file is successfully decrypted, returns -1 if not (the password is incorrect)
+    Returns 0 if the file is successfully decrypted, returns -1 if the password is incorrect and returns -2 if the wallet doesn't exist.
     """
-    with open(file_src.parent / "wallets" / f"{name}_wallet.enc", "rb") as f:
-        data = f.read()
-        f.close()
-    
-    os.remove(file_src.parent / "wallets" / f"{name}_wallet.enc")
-
-    salt = data[:16]
-    encrypted_data = data[16:]
-
-    key = generate_key(password, salt)
-    fernet = Fernet(key)
 
     try:
+        with open(file_src.parent / "wallets" / f"{name}_wallet.enc", "rb") as f:
+            data = f.read()
+            f.close()
+        
+        os.remove(file_src.parent / "wallets" / f"{name}_wallet.enc")
+
+        salt = data[:16]
+        encrypted_data = data[16:]
+
+        key = generate_key(password, salt)
+        fernet = Fernet(key)
+
         decrypted_data = fernet.decrypt(encrypted_data)
 
         with open(file_src.parent / "wallets" / f"{name}_wallet.json", "wb") as f:
@@ -81,5 +81,14 @@ def decrypt_wallet(name=str, password=str) -> int:
         
         return 0
     
+    except FileNotFoundError:
+        return -2
+    
     except Exception:
-        return 1
+        return -1
+
+create_wallet("john")
+
+encrypt_wallet("john", "Password")
+
+decrypt_wallet("joezfez", "Password1")
