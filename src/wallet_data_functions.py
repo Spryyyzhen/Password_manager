@@ -105,6 +105,9 @@ def edit_credentials(name=str, app=str, new_app_name=str, new_username=str, new_
         credentials["username/email"] = new_username
         credentials["password"] = new_password
 
+        with open(file, "w") as f:
+            json.dump(file_data, f, indent=4)
+        
         return 0
     
     return -1
