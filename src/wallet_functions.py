@@ -40,17 +40,16 @@ def encrypt_wallet(name=str, password=str) -> None:
     key = generate_key(password, salt)
     fernet = Fernet(key)
 
-    with open(file_src.parent / "wallets" / f"{name}_wallet.json", "rb") as f:
+    file = file_src.parent / "wallets" / f"{name}_wallet.json"
+    with open(file, "rb") as f:
         data = f.read()
-        f.close()
     
-    os.remove(file_src.parent / "wallets" / f"{name}_wallet.json")
+    os.remove(file)
 
     encrypted_data = fernet.encrypt(data)
 
     with open(file_src.parent / "wallets" / f"{name}_wallet.enc", "wb") as f:
         f.write(salt + encrypted_data)
-        f.close()
 
 
 def decrypt_wallet(name=str, password=str) -> int:
@@ -61,11 +60,13 @@ def decrypt_wallet(name=str, password=str) -> int:
     """
 
     try:
-        with open(file_src.parent / "wallets" / f"{name}_wallet.enc", "rb") as f:
-            data = f.read()
-            f.close()
+
+        file = file_src.parent / "wallets" / f"{name}_wallet.enc"
         
-        os.remove(file_src.parent / "wallets" / f"{name}_wallet.enc")
+        with open(file, "rb") as f:
+            data = f.read()
+        
+        os.remove(file)
 
         salt = data[:16]
         encrypted_data = data[16:]
@@ -77,7 +78,6 @@ def decrypt_wallet(name=str, password=str) -> int:
 
         with open(file_src.parent / "wallets" / f"{name}_wallet.json", "wb") as f:
             f.write(decrypted_data)
-            f.close()
         
         return 0
     
