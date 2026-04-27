@@ -4,8 +4,10 @@ import hashlib
 import requests
 
 def password_gen(letters=bool, numbers=bool, specials=bool, length=int) -> str:
-    # Function that generate random passwords
-    
+    """
+    Function that generate random passwords.
+    """
+
     characterlist = ""
     password = ""
     
@@ -22,8 +24,10 @@ def password_gen(letters=bool, numbers=bool, specials=bool, length=int) -> str:
     return password
 
 def password_checker(password=str) -> int:
-    # Function that checks via the HaveIBeenPwned API if the given password was already compromised
-    # Returns the number of data breaches where this password appears
+    """
+    Function that checks via the HaveIBeenPwned API if the given password was already compromised.\n
+    Returns the number of data breaches where this password appears, if an error with the API is returned, the function will return -1.
+    """
 
     sha_pwd = hashlib.sha1(password.encode("utf-8")).hexdigest().upper()
     prefix = sha_pwd[:5]
@@ -41,7 +45,3 @@ def password_checker(password=str) -> int:
         if returned_suffix == suffix:
             return int(count)
     return 0
-        
-
-print(password_checker("password"))
-print(password_gen(True, True, True, 20))
