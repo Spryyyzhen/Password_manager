@@ -1,12 +1,13 @@
 import json
 from pathlib import Path
+from password_functions import password_checker
 
 file_src = Path(__file__).resolve().parent
 
 
 def get_index_element(name=str, app=str) -> int:
     """
-    Function that gets the index in the user's .json file of the given application.\n
+    Function that gets the index of the given application in the user's .json file.\n
     Returns the index of the application in the file if found, if not, the function returns -1.
     """
 
@@ -114,7 +115,7 @@ def edit_credential(name=str, app=str, new_app_name=str, new_username=str, new_p
 
 def read_credential(name=str, app=str) -> int:
     """
-    Prints all the information about a stored credential from the given user's .json file.\n
+    Prints all the information about a stored credential from the given user's .json file and if the password is compromised.\n
     Returns 0 if the credential was found, if not, returns -1.
     """
     file = file_src.parent / "wallets" / f"{name}_wallet.json"
@@ -128,6 +129,13 @@ def read_credential(name=str, app=str) -> int:
 
     if index_app != -1:
         print(f"Application/Website Name : {credential["application"]}\nUsername/Email Address : {credential["username/email"]}\nPassword : {credential["password"]}")
+
+        data_breaches = password_checker(credential["password"])
+        if data_breaches > 0:
+            print(f"/!\\ CAREFUL This password has been detected in {data_breaches} existing data breaches, consider changing it later (/!\\")
+        elif data_breaches == -1:
+            print("The password checker was unable to connect to the HaveIBeenPwned API, consider checking the password later in case.")
+
         return 0
     
     return -1
