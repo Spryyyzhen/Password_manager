@@ -6,7 +6,7 @@ import atexit
 
 def user_logged(name=str, session_password=str) -> None:
     """
-    The interface with the user after he successfully logged in and allows to add, load, edit, delete his data in his wallet.\n
+    This function is the interface with the user after he successfully logged in and allows to add, load, edit, delete his data in his wallet.\n
     Automatically encrypts his wallet in case of a logout, a Ctrl-C/Ctrl-Z/Ctrl-D or terminal window closure (SIGTSTP/SIGBREAK).
     """
 
@@ -27,7 +27,8 @@ def user_logged(name=str, session_password=str) -> None:
         print(f"Welcome {name} ! Please select an option :")
 
         while True:
-            print("------------------------------\n1 - Add a credential\n2 - List your stored credentials\n3 - Edit a credential\n4 - Delete a credential\n5 - Get a credential's data\n6 - Logout")
+
+            print("------------------------------\n1 - Add a credential\n2 - List your stored credentials\n3 - Edit a credential\n4 - Delete a credential\n5 - Get a credential's data\n6 - Logout\n")
             cli = input(">>> ")
 
             if cli.lower() == "1":
@@ -66,3 +67,41 @@ def user_logged(name=str, session_password=str) -> None:
         
         encrypt_wallet(name, session_password)
         return
+    
+def home():
+    """
+    This function is the interface that the user has after executing the main python file and allows the user to log in, register, check a password, and generate a password.
+    """
+
+    try:
+        print("Welcome ! Please select an option :")
+
+        while True:
+
+            print("------------------------------\n1 - Log In\n2 - Register\n3 - Password Checker\n4 - Generate a password\n")
+            cli = str(input(">>> "))
+
+            if cli.lower() == "1":
+                
+                try:
+                    name = str(input("Please enter your name : "))
+                    password = str(input("Please enter your password : "))
+
+                    output = decrypt_wallet(name, password)
+
+                    if output == -1:
+                        print("The password is incorrect.")
+                    elif output == -2:
+                        print("This user doesn't exist.")
+                    else:
+                        user_logged(name, password)
+
+                except (KeyboardInterrupt, EOFError):
+                    pass
+
+            elif cli.lower() == "2":
+                register_interaction()
+
+
+    except (KeyboardInterrupt, EOFError):
+        pass
