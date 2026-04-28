@@ -1,4 +1,3 @@
-from password_functions import *
 from pathlib import Path
 from cryptography.fernet import Fernet
 from cryptography.hazmat.primitives import hashes
