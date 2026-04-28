@@ -20,7 +20,7 @@ def password_gen_interaction() -> str:
                 print("Please answer either by 'y'(yes) or 'n'(no).")
 
             while True:
-                ask_digits = str(input("Do you want to use digits (y/n) : ?"))
+                ask_digits = str(input("Do you want to use digits (y/n)? : "))
                 if ask_digits.lower() in ["y","n"]:       
                     digits_bool = (ask_digits.lower() == "y")
                     break
@@ -62,7 +62,7 @@ def add_interaction(name=str) -> None:
     """
     This function allows the user to add a credential to his wallet via inputs.
     """
-    
+
     app_input = str(input("Name of the application/website : "))
     app_exists = get_index_element(name, app_input)
     if app_exists != -1:
@@ -88,7 +88,7 @@ def edit_interaction(name=str) -> None:
     
     new_app_input = str(input("New name of the application/website : "))
     username_input = str(input("New Username or Email Address : "))
-    print("New Password :")
+    print("New Password : ")
     password_input = password_gen_interaction()
     
     edit_credential(name, app_input, new_app_input, username_input, password_input)
