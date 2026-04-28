@@ -1,10 +1,28 @@
 from interactions import *
+import signal
+import sys
+import atexit
+
 
 def user_logged(name=str, session_password=str) -> None:
     """
     The interface with the user after he successfully logged in and allows to add, load, edit, delete his data in his wallet.\n
-    Automatically encrypts his wallet in case of a logout or a Ctrl-C/Ctrl-Z.
+    Automatically encrypts his wallet in case of a logout, a Ctrl-C/Ctrl-Z/Ctrl-D or terminal window closure (SIGTSTP/SIGBREAK).
     """
+
+    if sys.platform != "win32":
+        def handle_ctrl_z_signal(signum, frame):
+            """
+            Function that allows to intercept the Linux Ctrl-Z and interpret it as an exit and not as a stop.
+            """
+            encrypt_wallet(name, session_password)
+            sys.exit(0)
+    
+        signal.signal(signal.SIGTSTP, handle_ctrl_z_signal)
+
+    else:
+        atexit.register(encrypt_wallet, name, session_password)
+
     try:
         print(f"Welcome {name} ! Please select an option :")
 
@@ -30,11 +48,21 @@ def user_logged(name=str, session_password=str) -> None:
                 get_data_interaction(name)
             
             elif cli.lower() == "6":
+                
+                if sys.platform != "win32":
+                    signal.signal(signal.SIGTSTP, signal.SIG_DFL)
+                else:
+                    atexit.unregister(encrypt_wallet)
+                
                 encrypt_wallet(name, session_password)
                 return
             else:
                 print("Please choose an option between 1 and 6.\n")
     
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, EOFError):
+
+        if sys.platform == "win32":
+            atexit.unregister(encrypt_wallet)
+        
         encrypt_wallet(name, session_password)
         return
