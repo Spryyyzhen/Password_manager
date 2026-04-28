@@ -3,25 +3,6 @@ import string
 import hashlib
 import requests
 
-def password_gen(letters=bool, numbers=bool, specials=bool, length=int) -> str:
-    """
-    Function that generate random passwords.
-    """
-
-    characterlist = ""
-    password = ""
-    
-    if letters:
-        characterlist += string.ascii_letters
-    if numbers:
-        characterlist += string.digits
-    if specials:
-        characterlist += string.punctuation
-    
-    for i in range(length):
-        password += random.choice(characterlist)
-    
-    return password
 
 def password_checker(password=str) -> int:
     """
@@ -45,3 +26,27 @@ def password_checker(password=str) -> int:
         if returned_suffix == suffix:
             return int(count)
     return 0
+
+def password_gen(letters=bool, numbers=bool, specials=bool, length=int) -> str:
+    """
+    Function that generate random passwords that are not in the HaveIBeenPwnd data breaches list.
+    """
+
+    characterlist = ""
+    password = ""
+    
+    if letters:
+        characterlist += string.ascii_letters
+    if numbers:
+        characterlist += string.digits
+    if specials:
+        characterlist += string.punctuation
+    
+    for i in range(length):
+        password += random.choice(characterlist)
+    
+    print(password)
+    if password_checker(password) > 0:
+        password_gen(letters, numbers, specials, length)
+
+    return password
