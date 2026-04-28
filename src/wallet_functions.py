@@ -19,16 +19,6 @@ def generate_key(password=str, salt=bytes) -> bytes:
     return base64.urlsafe_b64encode(key.derive(password.encode()))
 
 
-def create_wallet(name=str) -> None:
-    """
-    The function that allows the creation of a wallet (in other words, the creation of a password manager user).
-    """
-
-    file = file_src.parent / "wallets" / f"{name}_wallet.json"
-    file.parent.mkdir(parents=True, exist_ok=True)
-    file.write_text(f'{{\n\t"Wallet of {name}" : []\n}}')
-
-
 def encrypt_wallet(name=str, password=str) -> None:
     """
     Function that encrypts the user's .json wallet and will transform it into a .enc file.\n
@@ -85,3 +75,21 @@ def decrypt_wallet(name=str, password=str) -> int:
     
     except Exception:
         return -1
+
+
+def create_wallet(name=str, password=str) -> int:
+    """
+    The function that allows the creation of a wallet (in other words, the creation of a password manager user) and encrypt this wallet.\n
+    Returns 0 if a wallet has been created, returns -1 if a wallet with this name already exists.
+    """
+
+    file = file_src.parent / "wallets" / f"{name}_wallet.json"
+
+    if file.exists():
+        return -1
+    else:
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_text(f'{{\n\t"Wallet of {name}" : []\n}}')
+        
+        encrypt_wallet(name, password)
+        return 0
