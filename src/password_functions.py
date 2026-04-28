@@ -45,7 +45,6 @@ def password_gen(letters=bool, numbers=bool, specials=bool, length=int) -> str:
     for i in range(length):
         password += random.choice(characterlist)
     
-    print(password)
     if password_checker(password) > 0:
         password_gen(letters, numbers, specials, length)
 
